@@ -1,3 +1,6 @@
 [submodule "app/extensions/image_color_average"]
 	path = app/extensions/image_color_average
 	url = /Users/rhyshansen/programming/source/ImageColorAveraging
+[submodule "app/extensions/image_search_average"]
+	path = app/extensions/image_search_average
+	url = /Users/rhyshansen/programming/source/ImageSearchAveraging
