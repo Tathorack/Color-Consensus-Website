@@ -9,7 +9,7 @@
               <div id=button-tag>Browse...</div>
               <input id="file" name="file" type="file" style="display: none;">
             </label>
-              <button class="btn btn-default btn-block" id="upload-file-btn" type="button">Upload</button>
+              <button id="upload-file-btn" class="btn btn-default btn-block" type="button">Upload</button>
         </form>
         <h4 id="hex">
           Color as Hex:
@@ -23,12 +23,18 @@
           <div id="averaged-block" class="img-rounded embed-responsive embed-responsive-16by9" style='background: #ffffff; '></div>
         </div>
         <div class="progress">
-          <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div>
+          <div id=upload-progress class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div>
+        </div>
+        <div class="progress">
+          <div id=process-progress class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+            Waiting for image
+          </div>
         </div>
       </div>
     </div>
   </div>
     <script>
+      var isSubmitting = false;
       $(':file').change(function(){
         var file = this.files[0];
         name = file.name;
@@ -36,8 +42,11 @@
         type = file.type;
         console.log(name);
         $("#upload-file-btn").text("Upload ready");
-        $("#upload-file-btn").addClass('btn-default')
-        $("#upload-file-btn").removeClass('btn-success')
+        $('#upload-progress').css('width', "0%");
+        $('#upload-progress').html("");
+        $('#process-progress').addClass('progress-bar-info');
+        $('#process-progress').removeClass('progress-bar-danger progress-bar-success');
+        $('#process-progress').html("Waiting for image");
         if(file.name.length < 1) {
         }
         else if(file.size > 20000000) {
@@ -48,6 +57,11 @@
         }
         else {
           $('#upload-file-btn').click(function(){
+            if(isSubmitting) {
+              return;
+            }
+            isSubmitting = true;
+            console.log('request')
             var formData = new FormData($('#upload-file')[0]);
             var json = $(':file').serialize();
             formData.append("label", "WEBUPLOAD");
@@ -60,17 +74,21 @@
                   if (evt.lengthComputable) {
                     var percentComplete = evt.loaded / evt.total;
                       percentComplete = parseInt(percentComplete * 100);
-                      $('.progress-bar').css('width',percentComplete+"%");
-                      $('.progress-bar').html(percentComplete+"% Upload progress");
+                      $('#upload-progress').css('width',percentComplete+"%");
+                      $('#upload-progress').html(percentComplete+"% Upload progress");
                       if (percentComplete === 100) {
+                        $('#process-progress').removeClass('progress-bar-info');
+                        $('#process-progress').addClass('progress-bar-danger active');
+                        $('#process-progress').html("Processing image");
                     }
                   }
                 }, false);
                 return xhr;
               },
               success: completeHandler = function(data) {
-                //$("#upload-file-btn").addClass('btn-success')
-                //$("#upload-file-btn").removeClass('btn-default')
+                $('#process-progress').removeClass('progress-bar-danger active');
+                $('#process-progress').addClass('progress-bar-success');
+                $('#process-progress').html("Finished");
                 $("#upload-file-btn").text("Upload complete");
                 $('#averaged-block').css('background', data.result);
                 var hex = "Color as Hex: " + data.result;
@@ -78,8 +96,10 @@
                 var rgb = "Color as RGB: "+ data.color[1] + ", "+ data.color[2] + ", "+ data.color[3]
                 $('#rgb').text(rgb);
                 console.log('Success!');
+                isSubmitting = false;
               },
               error: errorHandler = function() {
+                isSubmitting = false;
                 alert("Something went wrong!");
               },
               data: formData,
