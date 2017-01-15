@@ -37,7 +37,7 @@
         $("#upload-file-btn").removeClass('btn-success')
         if(file.name.length < 1) {
         }
-        else if(file.size > 1000000) {
+        else if(file.size > 20000000) {
           alert("The file is too big");
         }
         else if(file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/jpeg' ) {
