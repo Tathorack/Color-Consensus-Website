@@ -5,11 +5,11 @@
       <div class="col-md-3">
         <!-- <div class="panel panel-default"> -->
         <form id="upload-file" method="post" enctype="multipart/form-data">
-            <label class="btn btn-primary btn-file btn-block">
+            <label class="btn btn-default btn-file btn-block">
               <div id=button-tag>Browse...</div>
               <input id="file" name="file" type="file" style="display: none;">
             </label>
-              <button id="upload-file-btn" class="btn btn-default btn-block" type="button">Upload</button>
+              <button id="upload-file-btn" class="btn btn-primary btn-block" type="button">Submit</button>
         </form>
         <h4 id="hex">
           Color as Hex:
@@ -41,7 +41,7 @@
         size = file.size;
         type = file.type;
         console.log(name);
-        $("#upload-file-btn").text("Upload ready");
+        //$("#upload-file-btn").text("Upload ready");
         $('#upload-progress').css('width', "0%");
         $('#upload-progress').html("");
         $('#process-progress').addClass('progress-bar-info');
@@ -89,7 +89,7 @@
                 $('#process-progress').removeClass('progress-bar-danger active');
                 $('#process-progress').addClass('progress-bar-success');
                 $('#process-progress').html("Finished");
-                $("#upload-file-btn").text("Upload complete");
+                //$("#upload-file-btn").text("Upload complete");
                 $('#averaged-block').css('background', data.result);
                 var hex = "Color as Hex: " + data.result;
                 $('#hex').text(hex);
