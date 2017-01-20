@@ -33,63 +33,82 @@
   </div>
 <script>
     var isSubmitting = false;
+    function search(){
+      console.log('func called')
+      if(isSubmitting) {
+        return;
+      }
+      var query = $('#search-string').val()
+      if(query.length < 1){
+        return;
+      }
+      isSubmitting = true;
+      console.log('Submitting')
+      var data={
+        'search': query,
+      }
+      console.log(data)
+      $.ajax({
+        url: $SCRIPT_ROOT + '/search_average/_search_single',  //server script to process data
+        type: 'POST',
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = evt.loaded / evt.total;
+                percentComplete = parseInt(percentComplete * 100);
+                if (percentComplete === 100) {
+                  $('#process-progress').removeClass('progress-bar-info');
+                  $('#process-progress').addClass('progress-bar-danger active');
+                  $('#process-progress').html("Processing search");
+              }
+            }
+          }, false);
+          return xhr;
+        },
+        success: completeHandler = function(data) {
+          $('#process-progress').removeClass('progress-bar-danger active');
+          $('#process-progress').addClass('progress-bar-success');
+          $('#process-progress').html("Finished");
+          $('#averaged-block').css('background', data.result);
+          var hex = "Color as Hex: " + data.result;
+          $('#hex').text(hex);
+          var rgb = "Color as RGB: "+ data.color[1] + ", "+ data.color[2] + ", "+ data.color[3];
+          $('#rgb').text(rgb);
+          $('#averaged-block').focus()
+          console.log('Success!');
+          isSubmitting = false;
+        },
+        error: errorHandler = function() {
+          isSubmitting = false;
+          alert("Something went wrong!");
+        },
+        data: JSON.stringify(data),
+        dataType: 'json',
+        cache: false,
+        contentType: false,
+        processData: false
+      }, 'json');
+    };
+    $('#search-submit').click(function(){
+      search();
+    });
+    $('#search-string').bind('keydown', function(e) {
+      if (e.keyCode == 13) {
+        search();
+      }
+    });
     $('#search-string').change(function(){
       $('#process-progress').addClass('progress-bar-info');
       $('#process-progress').removeClass('progress-bar-danger progress-bar-success');
       $('#process-progress').html("Waiting for search");
       $('#averaged-block').css('background', "#ffffff");
-        $('#search-submit').click(function(){
-        if(isSubmitting) {
-          return;
-        }
-        isSubmitting = true;
-        console.log('Submitting')
-        var data={
-          'search': $('#search-string').val(),
-        }
-        console.log(data)
-        $.ajax({
-          url: $SCRIPT_ROOT + '/search_average/_search_single',  //server script to process data
-          type: 'POST',
-          headers: {'Content-Type': 'application/json; charset=UTF-8'},
-          xhr: function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.addEventListener("progress", function(evt) {
-              if (evt.lengthComputable) {
-                var percentComplete = evt.loaded / evt.total;
-                  percentComplete = parseInt(percentComplete * 100);
-                  if (percentComplete === 100) {
-                    $('#process-progress').removeClass('progress-bar-info');
-                    $('#process-progress').addClass('progress-bar-danger active');
-                    $('#process-progress').html("Processing search");
-                }
-              }
-            }, false);
-            return xhr;
-          },
-          success: completeHandler = function(data) {
-            $('#process-progress').removeClass('progress-bar-danger active');
-            $('#process-progress').addClass('progress-bar-success');
-            $('#process-progress').html("Finished");
-            $('#averaged-block').css('background', data.result);
-            var hex = "Color as Hex: " + data.result;
-            $('#hex').text(hex);
-            var rgb = "Color as RGB: "+ data.color[1] + ", "+ data.color[2] + ", "+ data.color[3]
-            $('#rgb').text(rgb);
-            console.log('Success!');
-            isSubmitting = false;
-          },
-          error: errorHandler = function() {
-            isSubmitting = false;
-            alert("Something went wrong!");
-          },
-          data: JSON.stringify(data),
-          dataType: 'json',
-          cache: false,
-          contentType: false,
-          processData: false
-        }, 'json');
-      });
+      var hex = "Color as Hex: ";
+      $('#hex').text(hex);
+      var rgb = "Color as RGB: ";
+      $('#rgb').text(rgb);
+
     });
   </script>
   </div><!-- /.container -->
