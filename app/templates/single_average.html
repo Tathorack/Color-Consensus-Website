@@ -3,13 +3,11 @@
   <div class="container" style="margin-top:25px">
     <div class="row">
       <div class="col-md-3">
-        <!-- <div class="panel panel-default"> -->
         <form id="upload-file" method="post" enctype="multipart/form-data">
             <label class="btn btn-default btn-file btn-block">
-              <div id=button-tag>Browse...</div>
+              <div id=button-tag>Select file</div>
               <input id="file" name="file" type="file" style="display: none;">
             </label>
-              <button id="upload-file-btn" class="btn btn-primary btn-block" type="button">Submit</button>
         </form>
         <h4 id="hex">
           Color as Hex:
@@ -40,13 +38,12 @@
         name = file.name;
         size = file.size;
         type = file.type;
-        console.log(name);
-        //$("#upload-file-btn").text("Upload ready");
         $('#upload-progress').css('width', "0%");
         $('#upload-progress').html("");
         $('#process-progress').addClass('progress-bar-info');
         $('#process-progress').removeClass('progress-bar-danger progress-bar-success');
         $('#process-progress').html("Waiting for image");
+        $('#averaged-block').css('background', "#ffffff");
         if(file.name.length < 1) {
         }
         else if(file.size > 20000000) {
@@ -56,58 +53,53 @@
           alert("The file does not match png, or jpg");
         }
         else {
-          $('#upload-file-btn').click(function(){
-            if(isSubmitting) {
-              return;
-            }
-            isSubmitting = true;
-            console.log('request')
-            var formData = new FormData($('#upload-file')[0]);
-            var json = $(':file').serialize();
-            formData.append("label", "WEBUPLOAD");
-            $.ajax({
-              url: $SCRIPT_ROOT + '/single_average/_average_single',  //server script to process data
-              type: 'POST',
-              xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function(evt) {
-                  if (evt.lengthComputable) {
-                    var percentComplete = evt.loaded / evt.total;
-                      percentComplete = parseInt(percentComplete * 100);
-                      $('#upload-progress').css('width',percentComplete+"%");
-                      $('#upload-progress').html(percentComplete+"% Upload progress");
-                      if (percentComplete === 100) {
-                        $('#process-progress').removeClass('progress-bar-info');
-                        $('#process-progress').addClass('progress-bar-danger active');
-                        $('#process-progress').html("Processing image");
-                    }
+          if(isSubmitting) {
+            return;
+          }
+          isSubmitting = true;
+          console.log('Submitting')
+          var formData = new FormData($('#upload-file')[0]);
+          $.ajax({
+            url: $SCRIPT_ROOT + '/single_average/_average_single',  //server script to process data
+            type: 'POST',
+            xhr: function() {
+              var xhr = new window.XMLHttpRequest();
+              xhr.upload.addEventListener("progress", function(evt) {
+                if (evt.lengthComputable) {
+                  var percentComplete = evt.loaded / evt.total;
+                    percentComplete = parseInt(percentComplete * 100);
+                    $('#upload-progress').css('width',percentComplete+"%");
+                    $('#upload-progress').html(percentComplete+"% Upload progress");
+                    if (percentComplete === 100) {
+                      $('#process-progress').removeClass('progress-bar-info');
+                      $('#process-progress').addClass('progress-bar-danger active');
+                      $('#process-progress').html("Processing image");
                   }
-                }, false);
-                return xhr;
-              },
-              success: completeHandler = function(data) {
-                $('#process-progress').removeClass('progress-bar-danger active');
-                $('#process-progress').addClass('progress-bar-success');
-                $('#process-progress').html("Finished");
-                //$("#upload-file-btn").text("Upload complete");
-                $('#averaged-block').css('background', data.result);
-                var hex = "Color as Hex: " + data.result;
-                $('#hex').text(hex);
-                var rgb = "Color as RGB: "+ data.color[1] + ", "+ data.color[2] + ", "+ data.color[3]
-                $('#rgb').text(rgb);
-                console.log('Success!');
-                isSubmitting = false;
-              },
-              error: errorHandler = function() {
-                isSubmitting = false;
-                alert("Something went wrong!");
-              },
-              data: formData,
-              cache: false,
-              contentType: false,
-              processData: false
-            }, 'json');
-          });
+                }
+              }, false);
+              return xhr;
+            },
+            success: completeHandler = function(data) {
+              $('#process-progress').removeClass('progress-bar-danger active');
+              $('#process-progress').addClass('progress-bar-success');
+              $('#process-progress').html("Finished");
+              $('#averaged-block').css('background', data.result);
+              var hex = "Color as Hex: " + data.result;
+              $('#hex').text(hex);
+              var rgb = "Color as RGB: "+ data.color[1] + ", "+ data.color[2] + ", "+ data.color[3]
+              $('#rgb').text(rgb);
+              console.log('Success!');
+              isSubmitting = false;
+            },
+            error: errorHandler = function() {
+              isSubmitting = false;
+              alert("Something went wrong!");
+            },
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false
+          }, 'json');
         }
       });
     </script>
