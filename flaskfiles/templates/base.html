@@ -43,13 +43,15 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li id='index'><a href="/index">Home</a></li>
-            <li id='image-average' class="dropdown">
+            <!-- <li id='image-average' class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Image Averaging<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="/single_average">Single Image</a></li>
-                <li><a href="/search_average">Image Search</a></li>
+                <li><a href="/search_average">Search Color</a></li>x
               </ul>
-            </li>
+            </li> -->
+            <li id="search-average"><a href="/search_average">Search Color</a></li>
+            <li id="single-image"><a href="/single_average">Image Average</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -61,10 +63,10 @@
           $('#index').addClass("active")
           break;
         case '/single_average/':
-          $('#image-average').addClass("active")
+          $('#single-image').addClass("active")
           break;
         case '/search_average/':
-          $('#image-average').addClass("active")
+          $('#search-average').addClass("active")
           break;
         default:
 
