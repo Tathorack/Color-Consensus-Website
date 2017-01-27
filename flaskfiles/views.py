@@ -1,8 +1,8 @@
-from app import app
+from flaskfiles import app
 from flask import render_template, request, jsonify, redirect
-from app.extensions.image_color_average import imgavg as ia
-from app.extensions.image_search_average.imgsearchavg import google_average
-from app.extensions.api_keys import GoogleKeyLocker
+from flaskfiles.extensions.image_color_average import imgavg as ia
+from flaskfiles.extensions.image_search_average.imgsearchavg import google_average
+from flaskfiles.extensions.api_keys import GoogleKeyLocker
 import pprint
 GKL = GoogleKeyLocker()
 
