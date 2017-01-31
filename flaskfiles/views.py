@@ -1,7 +1,7 @@
 from flaskfiles import app
 from flask import render_template, request, jsonify, redirect
-from flaskfiles.extensions.image_color_average import imgavg as ia
-from flaskfiles.extensions.image_search_average.imgsearchavg import google_average
+import image_colors
+import image_search_colors
 from flaskfiles.extensions.api_keys import GoogleKeyLocker
 import pprint
 GKL = GoogleKeyLocker()
@@ -27,7 +27,7 @@ def average_upload_image():
     result = '#'
     color = ['upload', 255, 255, 255]
     f = request.files['file']
-    color = ia.avg_single_img(f, name='upload')
+    color = image_colors.average_single_image(f, name='upload')
     result = rgb_to_hex(color[1],color[2],color[3])
     return jsonify(result=result, color=color)
 
@@ -41,6 +41,6 @@ def average_search_images():
     result = '#'
     color = ['search', " ", " ", " "]
     search = request.get_json()['search']
-    color = google_average(search, 20, GKL.api(), GKL.cse())
+    color = image_search_colors.google_average(search, 20, GKL.api(), GKL.cse())
     result = rgb_to_hex(color[1],color[2],color[3])
     return jsonify(result=result, color=color)
