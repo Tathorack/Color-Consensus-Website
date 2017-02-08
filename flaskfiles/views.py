@@ -1,16 +1,16 @@
-from flaskfiles import app
 from flask import render_template, request, jsonify, redirect
+
 import image_colors
 import image_search_colors
+
+from flaskfiles import app
 from flaskfiles.extensions.api_keys import GoogleKeyLocker
-import pprint
+
 GKL = GoogleKeyLocker()
 
 def rgb_to_hex(red, green, blue):
     """Return color as #rrggbb for the given color values."""
     return '#%02x%02x%02x' % (red, green, blue)
-
-ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
 
 @app.route('/')
 @app.route('/index/')
@@ -29,6 +29,7 @@ def average_upload_image():
     f = request.files['file']
     color = image_colors.average_single_image(f, name='upload')
     result = rgb_to_hex(color[1],color[2],color[3])
+    app.logger.info('Image Average: R:%d, G:%d, B:%d, HEX:%s',color[1],color[2],color[3],result)
     return jsonify(result=result, color=color)
 
 @app.route('/search_average/')
@@ -43,4 +44,5 @@ def average_search_images():
     search = request.get_json()['search']
     color = image_search_colors.google_average(search, 20, GKL.api(), GKL.cse())
     result = rgb_to_hex(color[1],color[2],color[3])
+    app.logger.info('Search Average | Search: %s R:%d G:%d B:%d HEX:%s',search,color[1],color[2],color[3],result)
     return jsonify(result=result, color=color)

@@ -6,4 +6,9 @@ virtualenv venv_flask
 venv_flask/bin/pip install flaskfiles/extensions/image_colors-0.0.1-py3-none-any.whl
 venv_flask/bin/pip install flaskfiles/extensions/image_search_colors-0.0.1-py3-none-any.whl
 venv_flask/bin/pip install -r requirements.txt
+
+cd flaskfiles/static/
+npm install
 ```
+### Install API keys for Google
+place api_keys.py in flaskfiles/extensions

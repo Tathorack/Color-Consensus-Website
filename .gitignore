@@ -2,3 +2,4 @@ app/static/node_modules
 api_keys.py
 flaskfiles/static/node_modules
 venv_flask
+*.log
