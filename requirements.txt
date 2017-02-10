@@ -3,8 +3,8 @@ click
 Flask
 google-api-python-client
 httplib2
-image-colors
-image-search-colors
+imagecolor
+searchcolor
 itsdangerous
 Jinja2
 MarkupSafe
