@@ -3,8 +3,6 @@
 
 ```bash
 virtualenv venv_flask
-venv_flask/bin/pip install flaskfiles/extensions/image_colors-*
-venv_flask/bin/pip install flaskfiles/extensions/image_search_colors-*
 venv_flask/bin/pip install -r requirements.txt
 echo "virtual environment setup"
 cd flaskfiles/static/

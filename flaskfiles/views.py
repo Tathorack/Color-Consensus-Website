@@ -1,3 +1,4 @@
+from time import time
 from flask import render_template, request, jsonify, redirect
 
 import imagecolor
@@ -24,6 +25,7 @@ def single_average():
 
 @app.route('/single_average/_average_single', methods=['POST'])
 def average_upload_image():
+    start = time()
     result = '#'
     color = ['upload', 255, 255, 255]
     f = request.files['file']
@@ -32,7 +34,8 @@ def average_upload_image():
     green = color.get('green')
     blue = color.get('blue')
     result = rgb_to_hex(red, green, blue)
-    app.logger.info('Image Average: R:%d, G:%d, B:%d, HEX:%s', red, green, blue, result)
+    processing_time = time() - start
+    app.logger.info('Image Average | Response took %d seconds | R:%d, G:%d, B:%d, HEX:%s',processing_time, red, green, blue, result)
 
     return jsonify(result=result, red=red, green=green, blue=blue)
 
@@ -43,13 +46,15 @@ def search_average():
 
 @app.route('/search_average/_search_single', methods=['POST'])
 def average_search_images():
+    start = time()
     result = '#fff'
     color = {'red':-1, 'green':-1, 'blue':-1}
     search = request.get_json()['search']
-    color = searchcolor.google_average(search, 20, GKL.api(), GKL.cse())
+    color = searchcolor.google_average(search, 10, GKL.api(), GKL.cse(),max_threads=2)
     red = color.get('red')
     green = color.get('green')
     blue = color.get('blue')
     result = rgb_to_hex(red, green, blue)
-    app.logger.info('Search Average | Search: %s R:%d G:%d B:%d HEX:%s',search, red, green, blue, result)
+    processing_time = time() - start
+    app.logger.info('Search Average | Response took %d seconds | Search: %s R:%d G:%d B:%d HEX:%s',processing_time, search, red, green, blue, result)
     return jsonify(result=result, red=red, green=green, blue=blue)
