@@ -1,13 +1,33 @@
 from time import time
+import logging
+
 from flask import render_template, request, jsonify, redirect
 
+from colorutils import rgb_to_hsv
 import imagecolor
+from qhue import Bridge, QhueException
 import searchcolor
 
 from flaskfiles import app
 from flaskfiles.extensions.api_keys import GoogleKeyLocker
 
 GKL = GoogleKeyLocker()
+BRIDGE_IP='192.168.1.29'
+HUE_USER='3DQZXO2BnrAepp95yjIiyV0CZF9g5d78332az30f'
+
+bridge = Bridge(BRIDGE_IP, HUE_USER)
+lights = bridge.lights()
+
+logger = logging.getLogger(__name__)
+
+def set_hue_color(lightid, red, green, blue):
+        hsv = rgb_to_hsv((red, green, blue))
+        lightid='1'
+        hue = round((hsv[0]*65535)/360)
+        sat = round(hsv[1]*255)
+        bri = round(hsv[2]*255)
+        app.logger.info('Hue %0.3f=%d Sat %0.3f=%d Val %0.3f=%d', hsv[0], hue, hsv[1], sat,hsv[2], bri)
+        bridge.lights[lightid].state(on=True, bri=bri, hue=hue, sat=sat)
 
 def rgb_to_hex(red, green, blue):
     """Return color as #rrggbb for the given color values."""
@@ -35,8 +55,7 @@ def average_upload_image():
     blue = color.get('blue')
     result = rgb_to_hex(red, green, blue)
     processing_time = time() - start
-    app.logger.info('Image Average | Response took %d seconds | R:%d, G:%d, B:%d, HEX:%s',processing_time, red, green, blue, result)
-
+    app.logger.info('Image Average response took %0.3f seconds - R:%d, G:%d, B:%d, HEX:%s',processing_time, red, green, blue, result)
     return jsonify(result=result, red=red, green=green, blue=blue)
 
 @app.route('/search_average/')
@@ -50,11 +69,12 @@ def average_search_images():
     result = '#fff'
     color = {'red':-1, 'green':-1, 'blue':-1}
     search = request.get_json()['search']
-    color = searchcolor.google_average(search, 10, GKL.api(), GKL.cse(),max_threads=2)
+    color = searchcolor.google_average(search, 10, GKL.api(), GKL.cse(), max_threads=3, timeout=3, max_size=2)
     red = color.get('red')
     green = color.get('green')
     blue = color.get('blue')
     result = rgb_to_hex(red, green, blue)
     processing_time = time() - start
-    app.logger.info('Search Average | Response took %d seconds | Search: %s R:%d G:%d B:%d HEX:%s',processing_time, search, red, green, blue, result)
+    app.logger.info('Search Average response took %0.3f seconds - search: %s R:%d G:%d B:%d HEX:%s',processing_time, search, red, green, blue, result)
+    set_hue_color('1', red, green, blue)
     return jsonify(result=result, red=red, green=green, blue=blue)
