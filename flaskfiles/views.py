@@ -3,7 +3,9 @@ import logging
 
 from flask import render_template, request, jsonify, redirect
 
+from colorutils import rgb_to_hsv
 import imagecolor
+from qhue import Bridge, QhueException
 import searchcolor
 
 from flaskfiles import app
@@ -14,6 +16,21 @@ if app.config['SEARCH'] == 'bing':
 else:
     from flaskfiles.extensions.api_keys import GoogleKeyLocker
     GKL = GoogleKeyLocker()
+
+if app.config['LIGHTS'] == True:
+    BRIDGE_IP='192.168.1.29'
+    HUE_USER='3DQZXO2BnrAepp95yjIiyV0CZF9g5d78332az30f'
+    bridge = Bridge(BRIDGE_IP, HUE_USER)
+    lights = bridge.lights()
+
+def set_hue_color(lightid, red, green, blue):
+        hsv = rgb_to_hsv((red, green, blue))
+        lightid='1'
+        hue = round((hsv[0]*65535)/360)
+        sat = round(hsv[1]*255)
+        bri = round(hsv[2]*255)
+        app.logger.info('Hue %0.3f=%d Sat %0.3f=%d Val %0.3f=%d', hsv[0], hue, hsv[1], sat,hsv[2], bri)
+        bridge.lights[lightid].state(on=True, bri=bri, hue=hue, sat=sat)
 
 def rgb_to_hex(red, green, blue):
     """Return color as #rrggbb for the given color values."""
@@ -62,4 +79,6 @@ def average_search_images():
     result = rgb_to_hex(color.get('red'), color.get('green'), color.get('blue'))
     t1 = time() - t0
     app.logger.info('Search Average response took %0.3f seconds with %s - search: %s R:%d G:%d B:%d HEX:%s', t1, app.config['SEARCH'], search, red, green, blue, result)
+    if app.config['LIGHTS'] == True:
+        set_hue_color('1', red, green, blue)
     return jsonify(result=result, red=color.get('red'), green=color.get('green'), blue=color.get('blue'))
