@@ -1,5 +1,6 @@
 appdirs
 click
+colorutils
 Flask
 google-api-python-client
 httplib2
@@ -12,9 +13,12 @@ oauth2client
 olefile
 packaging
 Pillow
+py-bing-search
+py-ms-cognitive
 pyasn1
 pyasn1-modules
 pyparsing
+qhue
 requests
 rsa
 six

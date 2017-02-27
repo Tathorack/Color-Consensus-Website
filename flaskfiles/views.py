@@ -77,8 +77,11 @@ def average_search_images():
     else:
         color = searchcolor.google_average(search, 10, GKL.api(), GKL.cse(), max_threads=3, timeout=3, max_size=2)
     result = rgb_to_hex(color.get('red'), color.get('green'), color.get('blue'))
+    red = color.get('red')
+    green = color.get('green')
+    blue = color.get('blue')
     t1 = time() - t0
     app.logger.info('Search Average response took %0.3f seconds with %s - search: %s R:%d G:%d B:%d HEX:%s', t1, app.config['SEARCH'], search, red, green, blue, result)
     if app.config['LIGHTS'] == True:
         set_hue_color('1', red, green, blue)
-    return jsonify(result=result, red=color.get('red'), green=color.get('green'), blue=color.get('blue'))
+    return jsonify(result=result, red=red, green=green, blue=blue)
