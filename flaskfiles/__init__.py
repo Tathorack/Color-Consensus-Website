@@ -1,29 +1,52 @@
 import logging
 from logging.handlers import RotatingFileHandler
+import os
 
 from flask import Flask
 
 app = Flask(__name__)
 
+if os.environ.get("FLASKAPP_ENV") == 'dev':
+    app.config.from_object('flaskfiles.settings.DevConfig')
+elif os.environ.get("FLASKAPP_ENV") == 'lights':
+    app.config.from_object('flaskfiles.settings.LightsConfig')
+elif os.environ.get("FLASKAPP_ENV") == 'test':
+    app.config.from_object('flaskfiles.settings.TestConfig')
+else:
+    app.config.from_object('flaskfiles.settings.Config')
+
 from flaskfiles import views
 
-
+def logging_config(log, configvalue):
+    if configvalue == 'CRITICAL':
+        log.setLevel(logging.CRITICAL)
+    elif configvalue == 'ERROR':
+        log.setLevel(logging.ERROR)
+    elif configvalue == 'WARNING':
+        log.setLevel(logging.WARNING)
+    elif configvalue == 'INFO':
+        log.setLevel(logging.INFO)
+    elif configvalue == 'DEBUG':
+        log.setLevel(logging.DEBUG)
+    else:
+        log.setLevel(logging.INFO)
 
 file_handler = RotatingFileHandler('logs/flask.log', maxBytes=1024 * 1024 * 100, backupCount=20)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
-app.logger.setLevel(logging.INFO)
+logging_config(app.logger, app.config['FLASK_LOGGING'])
 app.logger.info('Flask logger configured')
+app.logger.info(app.config)
 
 colorlogger = logging.getLogger('imagecolor')
 colorlogger.addHandler(file_handler)
-colorlogger.setLevel(logging.WARNING)
+logging_config(colorlogger, app.config['LIB_LOGGING'])
 colorlogger.info('imagecolor logger configured')
 colorlogger.info('imagecolor v%s',views.imagecolor.__version__)
 
 searchlogger = logging.getLogger('searchcolor')
 searchlogger.addHandler(file_handler)
-searchlogger.setLevel(logging.WARNING)
+logging_config(searchlogger, app.config['LIB_LOGGING'])
 searchlogger.info('searchcolor logger configured')
 searchlogger.info('searchcolor v%s',views.searchcolor.__version__)
