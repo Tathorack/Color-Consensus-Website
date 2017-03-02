@@ -37,7 +37,6 @@ file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
 logging_config(app.logger, app.config['FLASK_LOGGING'])
 app.logger.info('Flask logger configured')
-app.logger.info(app.config)
 
 colorlogger = logging.getLogger('imagecolor')
 colorlogger.addHandler(file_handler)
