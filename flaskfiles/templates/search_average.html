@@ -35,8 +35,29 @@
   </div>
 <script>
     var isSubmitting = false;
+    function resetpage(){
+      $('#process-progress').addClass('progress-bar-info');
+      $('#process-progress').removeClass('progress-bar-danger progress-bar-success');
+      $('#process-progress').html("Waiting for search");
+      $('#averaged-block').css('background', "#ffffff");
+      var hex = "Color as Hex: ";
+      $('#hex').text(hex);
+      var rgb = "Color as RGB: ";
+      $('#rgb').text(rgb);
+    }
+    function setpage(data){
+      $('#process-progress').removeClass('progress-bar-danger active');
+      $('#process-progress').addClass('progress-bar-success');
+      $('#process-progress').html("Finished");
+      $('#averaged-block').css('background', data.hexc);
+      var hex = "Color as Hex: " + data.hexc;
+      $('#hex').text(hex);
+      var rgb = "Color as RGB: "+ data.red + ", "+ data.green + ", "+ data.blue;
+      $('#rgb').text(rgb);
+      $('#averaged-block').focus()
+    }
     function search(){
-      console.log('func called')
+      console.log('search called')
       if(isSubmitting) {
         return;
       }
@@ -84,6 +105,7 @@
         },
         error: errorHandler = function() {
           isSubmitting = false;
+          resetpage();
           alert("Something went wrong!");
         },
         data: JSON.stringify(data),
@@ -102,15 +124,7 @@
       }
     });
     $('#search-string').change(function(){
-      $('#process-progress').addClass('progress-bar-info');
-      $('#process-progress').removeClass('progress-bar-danger progress-bar-success');
-      $('#process-progress').html("Waiting for search");
-      $('#averaged-block').css('background', "#ffffff");
-      var hex = "Color as Hex: ";
-      $('#hex').text(hex);
-      var rgb = "Color as RGB: ";
-      $('#rgb').text(rgb);
-
+      resetpage();
     });
   </script>
   </div><!-- /.container -->
