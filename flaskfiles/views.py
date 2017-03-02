@@ -7,6 +7,7 @@ from colorutils import rgb_to_hsv
 import imagecolor
 from qhue import Bridge, QhueException
 import searchcolor
+from searchcolor import ZeroResultsException
 
 from flaskfiles import app
 
@@ -68,20 +69,31 @@ def search_average():
 
 @app.route('/search_average/_search_single', methods=['POST'])
 def average_search_images():
-    t0 = time()
-    result = '#fff'
-    color = {'red':-1, 'green':-1, 'blue':-1}
-    search = request.get_json()['search']
-    if app.config['SEARCH'] == 'bing':
-        color = searchcolor.bing_average(search, 10, BKL.api(), max_threads=3, timeout=3, max_size=2)
-    else:
-        color = searchcolor.google_average(search, 10, GKL.api(), GKL.cse(), max_threads=3, timeout=3, max_size=2)
-    result = rgb_to_hex(color.get('red'), color.get('green'), color.get('blue'))
-    red = color.get('red')
-    green = color.get('green')
-    blue = color.get('blue')
-    t1 = time() - t0
-    app.logger.info('Search Average response took %0.3f seconds with %s - search: %s R:%d G:%d B:%d HEX:%s', t1, app.config['SEARCH'], search, red, green, blue, result)
-    if app.config['LIGHTS'] == True:
-        set_hue_color('1', red, green, blue)
-    return jsonify(result=result, red=red, green=green, blue=blue)
+    try:
+        t0 = time()
+        search = request.get_json()['search']
+        app.logger.debug(search)
+        if app.config['SEARCH'] == 'bing':
+            color = searchcolor.bing_average(search, 10, BKL.api(), max_threads=3, timeout=3, max_size=2)
+        else:
+            color = searchcolor.google_average(search, 10, GKL.api(), GKL.cse(), max_threads=3, timeout=3, max_size=2)
+        red = color.get('red')
+        green = color.get('green')
+        blue = color.get('blue')
+        hexc = rgb_to_hex(red, green, blue)
+        t1 = time() - t0
+        app.logger.info('Search Average response took %0.3f seconds with %s - search: %s R:%d G:%d B:%d HEX:%s', t1, app.config['SEARCH'], search, red, green, blue, result)
+        if app.config['LIGHTS'] == True:
+            set_hue_color('1', red, green, blue)
+        result = 'Success'
+        return(jsonify(result=result, hexc=hexc, red=red, green=green, blue=blue))
+    except ZeroResultsException as e:
+        app.logger.warning('Exception: %s', e)
+        app.logger.debug('Traceback:', exc_info=True)
+        result = 'No results'
+        return(jsonify(result=result))
+    except Exception as e:
+        app.logger.warning('Exception: %s', e)
+        app.logger.debug('Traceback:', exc_info=True)
+        result = 'An error occured'
+        return(jsonify(result=result))

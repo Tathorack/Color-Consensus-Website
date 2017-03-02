@@ -91,16 +91,18 @@
           return xhr;
         },
         success: completeHandler = function(data) {
-          $('#process-progress').removeClass('progress-bar-danger active');
-          $('#process-progress').addClass('progress-bar-success');
-          $('#process-progress').html("Finished");
-          $('#averaged-block').css('background', data.result);
-          var hex = "Color as Hex: " + data.result;
-          $('#hex').text(hex);
-          var rgb = "Color as RGB: "+ data.red + ", "+ data.green + ", "+ data.blue;
-          $('#rgb').text(rgb);
-          $('#averaged-block').focus()
-          console.log('Success!');
+          switch (data.result) {
+            case 'Success':
+              setpage(data);
+              console.log('Success!');
+              break;
+            case 'No results':
+              alert("No search results!");
+              resetpage();
+              break;
+            default:
+              alert("Something went wrong!");
+          }
           isSubmitting = false;
         },
         error: errorHandler = function() {
