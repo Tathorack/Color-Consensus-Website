@@ -80,13 +80,13 @@ def average_search_images():
         red = color.get('red')
         green = color.get('green')
         blue = color.get('blue')
-        hexc = rgb_to_hex(red, green, blue)
+        hexcolor = rgb_to_hex(red, green, blue)
         t1 = time() - t0
-        app.logger.info('Search Average response took %0.3f seconds with %s - search: %s R:%d G:%d B:%d HEX:%s', t1, app.config['SEARCH'], search, red, green, blue, result)
+        app.logger.info('Search Average response took %0.3f seconds with %s - search: %s R:%d G:%d B:%d HEX:%s', t1, app.config['SEARCH'], search, red, green, blue, hexcolor)
         if app.config['LIGHTS'] == True:
             set_hue_color('1', red, green, blue)
         result = 'Success'
-        return(jsonify(result=result, hexc=hexc, red=red, green=green, blue=blue))
+        return(jsonify(result=result, hexcolor=hexcolor, red=red, green=green, blue=blue))
     except ZeroResultsException as e:
         app.logger.warning('Exception: %s', e)
         app.logger.debug('Traceback:', exc_info=True)
