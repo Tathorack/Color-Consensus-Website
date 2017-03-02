@@ -6,11 +6,13 @@ from flask import Flask
 
 app = Flask(__name__)
 
-if os.environ.get("FLASKAPP_ENV") == 'dev':
+env = os.environ.get("FLASKAPP_ENV")
+
+if env == 'dev':
     app.config.from_object('flaskfiles.settings.DevConfig')
-elif os.environ.get("FLASKAPP_ENV") == 'lights':
+elif env == 'lights':
     app.config.from_object('flaskfiles.settings.LightsConfig')
-elif os.environ.get("FLASKAPP_ENV") == 'test':
+elif env == 'test':
     app.config.from_object('flaskfiles.settings.TestConfig')
 else:
     app.config.from_object('flaskfiles.settings.Config')
@@ -37,6 +39,7 @@ file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
 logging_config(app.logger, app.config['FLASK_LOGGING'])
 app.logger.info('Flask logger configured')
+app.logger.info('Config used %s', env)
 
 colorlogger = logging.getLogger('imagecolor')
 colorlogger.addHandler(file_handler)
