@@ -2,7 +2,7 @@
 ### Set up virtual environment and install requirements
 
 ```bash
-virtualenv venv_flask
+virtualenv -p python3 venv_flask
 venv_flask/bin/pip install -r requirements.txt
 echo "virtual environment setup"
 cd flaskfiles/static/

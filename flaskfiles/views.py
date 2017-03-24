@@ -19,7 +19,8 @@ else:
     GKL = GoogleKeyLocker()
 
 if app.config['LIGHTS'] == True:
-    BRIDGE_IP='192.168.1.29'
+    #BRIDGE_IP='192.168.1.29'
+    BRIDGE_IP='172.19.5.10'
     HUE_USER='3DQZXO2BnrAepp95yjIiyV0CZF9g5d78332az30f'
     bridge = Bridge(BRIDGE_IP, HUE_USER)
     lights = bridge.lights()
