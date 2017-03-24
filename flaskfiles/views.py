@@ -12,10 +12,10 @@ from searchcolor import ZeroResultsException
 from flaskfiles import app
 
 if app.config['SEARCH'] == 'bing':
-    from flaskfiles.extensions.api_keys import BingKeyLocker
+    from flaskfiles.api_keys import BingKeyLocker
     BKL = BingKeyLocker()
 else:
-    from flaskfiles.extensions.api_keys import GoogleKeyLocker
+    from flaskfiles.api_keys import GoogleKeyLocker
     GKL = GoogleKeyLocker()
 
 if app.config['LIGHTS'] == True:
