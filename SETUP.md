@@ -16,12 +16,13 @@ move api_keys.py to flaskfiles/extensions
 export FLASKAPP_ENV='test'
 
 
+### Raspberry Pi dependencies
+```bash
 sudo apt-get update
 sudo apt-get upgrade
 
 sudo apt-get install \
 libfreetype6-dev \
-libjpeg-dev \
 libjpeg8-dev \
 liblcms2-dev \
 libwebp-dev \
@@ -39,3 +40,4 @@ sudo apt-get install \
 libtiff5-dev
 
 sudo pip3 install uwsgi
+```
