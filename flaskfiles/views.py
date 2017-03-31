@@ -18,7 +18,7 @@ else:
     from flaskfiles.api_keys import GoogleKeyLocker
     GKL = GoogleKeyLocker()
 
-display = 'thesis'
+display = app.config['DISPLAY_MODE']
 
 if app.config['LIGHTS'] == True:
     #BRIDGE_IP='192.168.1.29'

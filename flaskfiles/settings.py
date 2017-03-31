@@ -5,11 +5,18 @@ class Config(object):
     LIB_LOGGING = 'WARNING'
     LIGHTS = False
     SEARCH = 'google'
+    DISPLAY_MODE = 'default'
 
 class LightsConfig(Config):
     ENV = 'lights'
     DEBUG = False
     LIGHTS = True
+
+class ThesisConfig(Config):
+    ENV = 'thesis'
+    DEBUG = False
+    LIGHTS = True
+    DISPLAY_MODE = 'thesis'
 
 class DevConfig(Config):
     ENV = 'dev'
