@@ -18,6 +18,8 @@ else:
     from flaskfiles.api_keys import GoogleKeyLocker
     GKL = GoogleKeyLocker()
 
+display = 'thesis'
+
 if app.config['LIGHTS'] == True:
     #BRIDGE_IP='192.168.1.29'
     BRIDGE_IP='172.19.5.10'
@@ -39,6 +41,12 @@ def rgb_to_hex(red, green, blue):
     return '#%02x%02x%02x' % (red, green, blue)
 
 @app.route('/')
+def redirec_to_display():
+    if display == 'thesis':
+        return render_template('thesis_display.html')
+    else:
+        return render_template('home.html')
+
 @app.route('/index/')
 def index():
     return render_template("home.html")
@@ -67,6 +75,11 @@ def average_upload_image():
 def search_average():
     """Test File Upload."""
     return render_template('search_average.html')
+
+@app.route('/thesis_display/')
+def thesis_display():
+    """Test File Upload."""
+    return render_template('thesis_display.html')
 
 @app.route('/search_average/_search_single', methods=['POST'])
 def average_search_images():

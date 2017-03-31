@@ -1,111 +1,111 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="container" style="margin-top:25px">
-    <div class="row">
-      <div class="col-md-3">
-        <form id="upload-file" method="post" enctype="multipart/form-data">
-            <label class="btn btn-default btn-file btn-block">
-              <div id=button-tag>Select file</div>
-              <input id="file" name="file" type="file" style="display: none;">
-            </label>
-        </form>
-        <h4 id="hex">
-          Color as Hex:
-        </h4>
-        <h4 id="rgb">
-          Color as RGB:
-        </h4>
-        <p>
-          The color returned is the average color of the upladed image.
-        </p>
-        <p>Works with png and jpeg images</p>
-        </div>
-      <div class="col-md-9">
-        <div class="panel panel-default">
-          <div id="averaged-block" class="img-rounded embed-responsive embed-responsive-16by9" style='background: #ffffff; '></div>
-        </div>
-        <div class="progress">
-          <div id=upload-progress class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div>
-        </div>
-        <div class="progress">
-          <div id=process-progress class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
-            Waiting for image
-          </div>
+{% include "header.html" %}
+<div class="container" style="margin-top:25px">
+  <div class="row">
+    <div class="col-md-3">
+      <form id="upload-file" method="post" enctype="multipart/form-data">
+          <label class="btn btn-default btn-file btn-block">
+            <div id=button-tag>Select file</div>
+            <input id="file" name="file" type="file" style="display: none;">
+          </label>
+      </form>
+      <h4 id="hex">
+        Color as Hex:
+      </h4>
+      <h4 id="rgb">
+        Color as RGB:
+      </h4>
+      <p>
+        The color returned is the average color of the upladed image.
+      </p>
+      <p>Works with png and jpeg images</p>
+      </div>
+    <div class="col-md-9">
+      <div class="panel panel-default">
+        <div id="averaged-block" class="img-rounded embed-responsive embed-responsive-16by9" style='background: #ffffff; '></div>
+      </div>
+      <div class="progress">
+        <div id=upload-progress class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div>
+      </div>
+      <div class="progress">
+        <div id=process-progress class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+          Waiting for image
         </div>
       </div>
     </div>
   </div>
-    <script>
-      var isSubmitting = false;
-      $(':file').change(function(){
-        var file = this.files[0];
-        name = file.name;
-        size = file.size;
-        type = file.type;
-        $('#upload-progress').css('width', "0%");
-        $('#upload-progress').html("");
-        $('#process-progress').addClass('progress-bar-info');
-        $('#process-progress').removeClass('progress-bar-danger progress-bar-success');
-        $('#process-progress').html("Waiting for image");
-        $('#averaged-block').css('background', "#ffffff");
-        if(file.name.length < 1) {
-        }
-        else if(file.size > 20000000) {
-          alert("The file is too big");
-        }
-        else if(file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/jpeg' ) {
-          alert("The file does not match png, or jpg");
-        }
-        else {
-          if(isSubmitting) {
-            return;
-          }
-          isSubmitting = true;
-          console.log('Submitting')
-          var formData = new FormData($('#upload-file')[0]);
-          $.ajax({
-            url: $SCRIPT_ROOT + '/single_average/_average_single',  //server script to process data
-            type: 'POST',
-            xhr: function() {
-              var xhr = new window.XMLHttpRequest();
-              xhr.upload.addEventListener("progress", function(evt) {
-                if (evt.lengthComputable) {
-                  var percentComplete = evt.loaded / evt.total;
-                    percentComplete = parseInt(percentComplete * 100);
-                    $('#upload-progress').css('width',percentComplete+"%");
-                    $('#upload-progress').html(percentComplete+"% Upload progress");
-                    if (percentComplete === 100) {
-                      $('#process-progress').removeClass('progress-bar-info');
-                      $('#process-progress').addClass('progress-bar-danger active');
-                      $('#process-progress').html("Processing image");
-                  }
-                }
-              }, false);
-              return xhr;
-            },
-            success: completeHandler = function(data) {
-              $('#process-progress').removeClass('progress-bar-danger active');
-              $('#process-progress').addClass('progress-bar-success');
-              $('#process-progress').html("Finished");
-              $('#averaged-block').css('background', data.result);
-              var hex = "Color as Hex: " + data.result;
-              $('#hex').text(hex);
-              var rgb = "Color as RGB: "+ data.red + ", "+ data.green + ", "+ data.blue;
-              $('#rgb').text(rgb);
-              console.log('Success!');
-              isSubmitting = false;
-            },
-            error: errorHandler = function() {
-              isSubmitting = false;
-              alert("Something went wrong!");
-            },
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false
-          }, 'json');
-        }
-      });
-    </script>
-  </div><!-- /.container -->
+</div><!-- /.container -->
+<script>
+  var isSubmitting = false;
+  $(':file').change(function(){
+    var file = this.files[0];
+    name = file.name;
+    size = file.size;
+    type = file.type;
+    $('#upload-progress').css('width', "0%");
+    $('#upload-progress').html("");
+    $('#process-progress').addClass('progress-bar-info');
+    $('#process-progress').removeClass('progress-bar-danger progress-bar-success');
+    $('#process-progress').html("Waiting for image");
+    $('#averaged-block').css('background', "#ffffff");
+    if(file.name.length < 1) {
+    }
+    else if(file.size > 20000000) {
+      alert("The file is too big");
+    }
+    else if(file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/jpeg' ) {
+      alert("The file does not match png, or jpg");
+    }
+    else {
+      if(isSubmitting) {
+        return;
+      }
+      isSubmitting = true;
+      console.log('Submitting')
+      var formData = new FormData($('#upload-file')[0]);
+      $.ajax({
+        url: $SCRIPT_ROOT + '/single_average/_average_single',  //server script to process data
+        type: 'POST',
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+          xhr.upload.addEventListener("progress", function(evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = evt.loaded / evt.total;
+                percentComplete = parseInt(percentComplete * 100);
+                $('#upload-progress').css('width',percentComplete+"%");
+                $('#upload-progress').html(percentComplete+"% Upload progress");
+                if (percentComplete === 100) {
+                  $('#process-progress').removeClass('progress-bar-info');
+                  $('#process-progress').addClass('progress-bar-danger active');
+                  $('#process-progress').html("Processing image");
+              }
+            }
+          }, false);
+          return xhr;
+        },
+        success: completeHandler = function(data) {
+          $('#process-progress').removeClass('progress-bar-danger active');
+          $('#process-progress').addClass('progress-bar-success');
+          $('#process-progress').html("Finished");
+          $('#averaged-block').css('background', data.result);
+          var hex = "Color as Hex: " + data.result;
+          $('#hex').text(hex);
+          var rgb = "Color as RGB: "+ data.red + ", "+ data.green + ", "+ data.blue;
+          $('#rgb').text(rgb);
+          console.log('Success!');
+          isSubmitting = false;
+        },
+        error: errorHandler = function() {
+          isSubmitting = false;
+          alert("Something went wrong!");
+        },
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false
+      }, 'json');
+    }
+  });
+</script>
 {% endblock %}
