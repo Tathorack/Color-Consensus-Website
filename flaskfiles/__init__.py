@@ -7,6 +7,7 @@ from flask import Flask
 app = Flask(__name__)
 
 env = os.environ.get("FLASKAPP_ENV")
+log = os.environ.get("FLASKAPP_LOG")
 
 if env == 'dev':
     app.config.from_object('flaskfiles.settings.DevConfig')
@@ -16,6 +17,9 @@ elif env == 'test':
     app.config.from_object('flaskfiles.settings.TestConfig')
 else:
     app.config.from_object('flaskfiles.settings.Config')
+
+if log == None:
+    log = 'flask.log'
 
 from flaskfiles import views
 
@@ -33,7 +37,7 @@ def logging_config(log, configvalue):
     else:
         log.setLevel(logging.INFO)
 
-file_handler = RotatingFileHandler('/var/log/flask.log', maxBytes=1024 * 1024 * 100, backupCount=20)
+file_handler = RotatingFileHandler(log, maxBytes=1024 * 1024 * 100, backupCount=20)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
