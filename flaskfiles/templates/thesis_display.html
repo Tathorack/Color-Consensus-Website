@@ -1,123 +1,125 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container" style="margin-top:25px">
-  <div class="row">
-    <div class="col-lg-12">
-      <h1 class="text-center">Color Consensus</h1>
-      <div class="spacer10"></div>
-      <h4 class="text-center">
-        The color of the light changes to match the average color of the top 10 image search results for a given word
-      </h4>
-      <div class="spacer10"></div>
-      <div class="input-group">
-        <input id="search-string" name='gsearch' type="text" class="form-control input-lg" placeholder="Search">
-        <div class="input-group-btn">
-          <button id="search-submit" class="btn btn-default btn-lg">
-            <i class="glyphicon glyphicon-search"></i>
-          </button>
+<body style="padding-top: 50px">
+  <div class="container" style="margin-top:25px">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="text-center">Color Consensus</h1>
+        <div class="spacer10"></div>
+        <h4 class="text-center">
+          The color of the light changes to match the average color of the top 10 image search results for a given word
+        </h4>
+        <div class="spacer10"></div>
+        <div class="input-group">
+          <input id="search-string" name='gsearch' type="text" class="form-control input-lg" placeholder="Search">
+          <div class="input-group-btn">
+            <button id="search-submit" class="btn btn-default btn-lg">
+              <i class="glyphicon glyphicon-search"></i>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="spacer20"></div>
-      <div class="progress">
-        <div id=process-progress class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
-          Waiting for search
+        <div class="spacer20"></div>
+        <div class="progress">
+          <div id=process-progress class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+            Waiting for search
+          </div>
         </div>
+        <h4 id="rgb" class="text-center">
+          Color as RGB:
+        </h4>
       </div>
-      <h4 id="rgb" class="text-center">
-        Color as RGB:
-      </h4>
     </div>
-  </div>
-</div><!-- /.container -->
+  </div><!-- /.container -->
 
-<script>
-    var isSubmitting = false;
-    function resetpage(){
-      $('#process-progress').addClass('progress-bar-info');
-      $('#process-progress').removeClass('progress-bar-danger progress-bar-success active');
-      $('#process-progress').html("Waiting for search");
-      var rgb = "Color as RGB: ";
-      $('#rgb').text(rgb);
-    }
-    function setpage(data){
-      $('#process-progress').removeClass('progress-bar-danger active');
-      $('#process-progress').addClass('progress-bar-success');
-      $('#process-progress').html("Finished");
-      var rgb = "Color as RGB: "+ data.red + ", "+ data.green + ", "+ data.blue;
-      $('#rgb').text(rgb);
-    }
-    function search(){
-      console.log('search called')
-      if(isSubmitting) {
-        return;
+  <script>
+      var isSubmitting = false;
+      function resetpage(){
+        $('#process-progress').addClass('progress-bar-info');
+        $('#process-progress').removeClass('progress-bar-danger progress-bar-success active');
+        $('#process-progress').html("Waiting for search");
+        var rgb = "Color as RGB: ";
+        $('#rgb').text(rgb);
       }
-      var query = $('#search-string').val()
-      if(query.length < 1){
-        return;
+      function setpage(data){
+        $('#process-progress').removeClass('progress-bar-danger active');
+        $('#process-progress').addClass('progress-bar-success');
+        $('#process-progress').html("Finished");
+        var rgb = "Color as RGB: "+ data.red + ", "+ data.green + ", "+ data.blue;
+        $('#rgb').text(rgb);
       }
-      isSubmitting = true;
-      console.log('Submitting')
-      var data={
-        'search': query,
-      }
-      console.log(data)
-      $.ajax({
-        url: $SCRIPT_ROOT + '/search_average/_search_single',  //server script to process data
-        type: 'POST',
-        headers: {'Content-Type': 'application/json; charset=UTF-8'},
-        xhr: function() {
-          var xhr = new window.XMLHttpRequest();
-          xhr.upload.addEventListener("progress", function(evt) {
-            if (evt.lengthComputable) {
-              var percentComplete = evt.loaded / evt.total;
-                percentComplete = parseInt(percentComplete * 100);
-                if (percentComplete === 100) {
-                  $('#process-progress').removeClass('progress-bar-info');
-                  $('#process-progress').addClass('progress-bar-danger active');
-                  $('#process-progress').html("Processing search");
+      function search(){
+        console.log('search called')
+        if(isSubmitting) {
+          return;
+        }
+        var query = $('#search-string').val()
+        if(query.length < 1){
+          return;
+        }
+        isSubmitting = true;
+        console.log('Submitting')
+        var data={
+          'search': query,
+        }
+        console.log(data)
+        $.ajax({
+          url: $SCRIPT_ROOT + '/search_average/_search_single',  //server script to process data
+          type: 'POST',
+          headers: {'Content-Type': 'application/json; charset=UTF-8'},
+          xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function(evt) {
+              if (evt.lengthComputable) {
+                var percentComplete = evt.loaded / evt.total;
+                  percentComplete = parseInt(percentComplete * 100);
+                  if (percentComplete === 100) {
+                    $('#process-progress').removeClass('progress-bar-info');
+                    $('#process-progress').addClass('progress-bar-danger active');
+                    $('#process-progress').html("Processing search");
+                }
               }
+            }, false);
+            return xhr;
+          },
+          success: completeHandler = function(data) {
+            switch (data.result) {
+              case 'Success':
+                setpage(data);
+                console.log('Success!');
+                break;
+              case 'No results':
+                alert("No search results!");
+                resetpage();
+                break;
+              default:
+                alert("Something went wrong!");
+                resetpage();
             }
-          }, false);
-          return xhr;
-        },
-        success: completeHandler = function(data) {
-          switch (data.result) {
-            case 'Success':
-              setpage(data);
-              console.log('Success!');
-              break;
-            case 'No results':
-              alert("No search results!");
-              resetpage();
-              break;
-            default:
-              alert("Something went wrong!");
-              resetpage();
-          }
-          isSubmitting = false;
-        },
-        error: errorHandler = function() {
-          isSubmitting = false;
-          resetpage();
-          alert("Something went wrong!");
-        },
-        data: JSON.stringify(data),
-        dataType: 'json',
-        cache: false,
-        contentType: false,
-        processData: false
-      }, 'json');
-    };
-    $('#search-submit').click(function(){
-      search();
-    });
-    $('#search-string').bind('keydown', function(e) {
-      if (e.keyCode == 13) {
+            isSubmitting = false;
+          },
+          error: errorHandler = function() {
+            isSubmitting = false;
+            resetpage();
+            alert("Something went wrong!");
+          },
+          data: JSON.stringify(data),
+          dataType: 'json',
+          cache: false,
+          contentType: false,
+          processData: false
+        }, 'json');
+      };
+      $('#search-submit').click(function(){
         search();
-      }
-    });
-    $('#search-string').change(function(){
-      resetpage();
-    });
-</script>
+      });
+      $('#search-string').bind('keydown', function(e) {
+        if (e.keyCode == 13) {
+          search();
+        }
+      });
+      $('#search-string').change(function(){
+        resetpage();
+      });
+  </script>
+</body>
 {% endblock %}
