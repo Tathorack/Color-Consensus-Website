@@ -44,6 +44,8 @@ def rgb_to_hex(red, green, blue):
 def redirec_to_display():
     if display == 'thesis':
         return render_template('thesis_display.html')
+    elif display == 'colors':
+        return render_template('thesis_site.html')
     else:
         return render_template('home.html')
 

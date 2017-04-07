@@ -18,6 +18,11 @@ class ThesisConfig(Config):
     LIGHTS = True
     DISPLAY_MODE = 'thesis'
 
+class ColorsSiteConfig(Config):
+    ENV = 'colors'
+    DEBUG = False
+    DISPLAY_MODE = 'colors'
+
 class DevConfig(Config):
     ENV = 'dev'
     DEBUG = True

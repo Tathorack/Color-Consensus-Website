@@ -15,6 +15,8 @@ elif env == 'lights':
     app.config.from_object('flaskfiles.settings.LightsConfig')
 elif env == 'thesis':
     app.config.from_object('flaskfiles.settings.ThesisConfig')
+elif env == 'colors':
+    app.config.from_object('flaskfiles.settings.ColorsSiteConfig')
 elif env == 'test':
     app.config.from_object('flaskfiles.settings.TestConfig')
 else:
