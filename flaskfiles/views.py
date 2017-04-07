@@ -14,6 +14,9 @@ from flaskfiles import app
 if app.config['SEARCH'] == 'bing':
     from flaskfiles.api_keys import BingKeyLocker
     BKL = BingKeyLocker()
+elif app.config['SEARCH'] == 'limited':
+    from flaskfiles.api_keys import LimitedGoogleKeyLocker
+    GKL = LimitedGoogleKeyLocker()
 else:
     from flaskfiles.api_keys import GoogleKeyLocker
     GKL = GoogleKeyLocker()

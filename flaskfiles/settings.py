@@ -21,6 +21,7 @@ class ThesisConfig(Config):
 class ColorsSiteConfig(Config):
     ENV = 'colors'
     DEBUG = False
+    SEARCH = 'limited'
     DISPLAY_MODE = 'colors'
 
 class DevConfig(Config):
