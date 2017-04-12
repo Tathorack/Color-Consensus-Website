@@ -56,7 +56,6 @@
       $('#hex').text(hex);
       var rgb = "Color as RGB: "+ data.red + ", "+ data.green + ", "+ data.blue;
       $('#rgb').text(rgb);
-      $('#averaged-block').focus()
     }
     function search(){
       console.log('search called')
@@ -128,8 +127,8 @@
         search();
       }
     });
-    $('#search-string').change(function(){
-      resetpage();
+    $('#search-string').click(function(){
+      $('#search-string').val('');
     });
   </script>
   </div><!-- /.container -->

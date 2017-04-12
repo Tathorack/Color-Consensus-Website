@@ -45,10 +45,10 @@ def rgb_to_hex(red, green, blue):
 
 @app.route('/')
 def redirec_to_display():
-    if display == 'thesis':
-        return render_template('thesis_display.html')
-    elif display == 'colors':
-        return render_template('thesis_site.html')
+    if display == 'thesis-install':
+        return render_template('thesis_installation.html')
+    elif display == 'thesis-web':
+        return render_template('thesis_web.html')
     else:
         return render_template('home.html')
 
@@ -58,7 +58,6 @@ def index():
 
 @app.route('/single_average/')
 def single_average():
-    """Test File Upload."""
     return render_template('single_average.html')
 
 @app.route('/single_average/_average_single', methods=['POST'])
@@ -78,13 +77,15 @@ def average_upload_image():
 
 @app.route('/search_average/')
 def search_average():
-    """Test File Upload."""
     return render_template('search_average.html')
 
-@app.route('/thesis_display/')
-def thesis_display():
-    """Test File Upload."""
-    return render_template('thesis_display.html')
+@app.route('/thesis_installation/')
+def thesis_installation():
+    return render_template('thesis_installation.html')
+
+@app.route('/thesis_web/')
+def thesis_web():
+    return render_template('thesis_web.html')
 
 @app.route('/search_average/_search_single', methods=['POST'])
 def average_search_images():

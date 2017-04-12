@@ -12,17 +12,17 @@ class LightsConfig(Config):
     DEBUG = False
     LIGHTS = True
 
-class ThesisConfig(Config):
-    ENV = 'thesis'
+class ThesisInstallConfig(Config):
+    ENV = 'thesis-install'
     DEBUG = False
     LIGHTS = True
-    DISPLAY_MODE = 'thesis'
+    DISPLAY_MODE = 'thesis-install'
 
-class ColorsSiteConfig(Config):
-    ENV = 'colors'
+class ThesisWebConfig(Config):
+    ENV = 'thesis_web'
     DEBUG = False
     SEARCH = 'limited'
-    DISPLAY_MODE = 'colors'
+    DISPLAY_MODE = 'thesis-web'
 
 class DevConfig(Config):
     ENV = 'dev'
