@@ -1,25 +1,30 @@
+# stdlib imports
 import logging
 from logging.handlers import RotatingFileHandler
 import os
-
+# package imports
 from flask import Flask
-
+# local imports
 from flaskfiles.utilities import logging_config
 
+# create app and load config from environment variable
 app = Flask(__name__)
-
 config = os.environ.get("FLASKAPP_CONFIG")
 if config is not None:
     app.config.from_object(config)
 else:
     app.config.from_object('flaskfiles.settings.Config')
 
+# configure log path
 log = os.environ.get("FLASKAPP_LOG")
 if log is None:
     log = 'flask.log'
 
+# Import views once app is created and configured
+# This is needed because views needs to import the app and config
 from flaskfiles import views
 
+# configure loggers
 file_handler = RotatingFileHandler(
     log, maxBytes=1024 * 1024 * 100, backupCount=20)
 formatter = logging.Formatter(
