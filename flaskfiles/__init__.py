@@ -4,6 +4,7 @@ import os
 
 from flask import Flask
 
+from flaskfiles.utilities import logging_config
 
 app = Flask(__name__)
 
@@ -19,19 +20,6 @@ if log is None:
 
 from flaskfiles import views
 
-def logging_config(log, configvalue):
-    if configvalue == 'CRITICAL':
-        log.setLevel(logging.CRITICAL)
-    elif configvalue == 'ERROR':
-        log.setLevel(logging.ERROR)
-    elif configvalue == 'WARNING':
-        log.setLevel(logging.WARNING)
-    elif configvalue == 'INFO':
-        log.setLevel(logging.INFO)
-    elif configvalue == 'DEBUG':
-        log.setLevel(logging.DEBUG)
-    else:
-        log.setLevel(logging.INFO)
 file_handler = RotatingFileHandler(
     log, maxBytes=1024 * 1024 * 100, backupCount=20)
 formatter = logging.Formatter(

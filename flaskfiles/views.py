@@ -11,6 +11,7 @@ import searchcolor
 from searchcolor import ZeroResultsException
 
 from flaskfiles import app
+from flaskfiles.utilities import rgb_to_hex
 
 api = os.environ.get("GOOGLE_SEARCH_API")
 cse = os.environ.get("GOOGLE_SEARCH_CSE")
@@ -33,9 +34,6 @@ def set_hue_color(lightid, red, green, blue):
         app.logger.info('Hue %0.3f=%d Sat %0.3f=%d Val %0.3f=%d', hsv[0], hue, hsv[1], sat,hsv[2], bri)
         bridge.lights[lightid].state(on=True, bri=bri, hue=hue, sat=sat)
 
-def rgb_to_hex(red, green, blue):
-    """Return color as #rrggbb for the given color values."""
-    return '#%02x%02x%02x' % (red, green, blue)
 
 @app.route('/')
 def redirec_to_display():
