@@ -11,28 +11,16 @@ import searchcolor
 from searchcolor import ZeroResultsException
 
 from flaskfiles import app
-from flaskfiles.utilities import rgb_to_hex
+from flaskfiles.utilities import HueLightControler, rgb_to_hex
 
 api = os.environ.get("GOOGLE_SEARCH_API")
 cse = os.environ.get("GOOGLE_SEARCH_CSE")
 display = app.config['DISPLAY_MODE']
 
-if app.config['LIGHTS'] == True:
-    # BRIDGE_IP='192.168.1.29' '172.19.5.10'
-    # HUE_USER'3DQZXO2BnrAepp95yjIiyV0CZF9g5d78332az30f'
+if app.config['LIGHTS'] is True:
     BRIDGE_IP = os.environ.get('BRIDGE_IP')
     HUE_USER = os.environ.get('HUE_USER')
-    bridge = Bridge(BRIDGE_IP, HUE_USER)
-    lights = bridge.lights()
-
-def set_hue_color(lightid, red, green, blue):
-        hsv = rgb_to_hsv((red, green, blue))
-        lightid = '1'
-        hue = round((hsv[0]*65535)/360)
-        sat = round(hsv[1]*255)
-        bri = round(hsv[2]*255)
-        app.logger.info('Hue %0.3f=%d Sat %0.3f=%d Val %0.3f=%d', hsv[0], hue, hsv[1], sat,hsv[2], bri)
-        bridge.lights[lightid].state(on=True, bri=bri, hue=hue, sat=sat)
+    lightcontrol = HueLightControler(BRIDGE_IP, HUE_USER)
 
 
 @app.route('/')
@@ -93,7 +81,7 @@ def average_search_images():
         t1 = time() - t0
         app.logger.info('Search Average response took %0.3f seconds with %s - search: %s R:%d G:%d B:%d HEX:%s', t1, app.config['SEARCH'], search, red, green, blue, hexcolor)
         if app.config['LIGHTS'] == True:
-            set_hue_color('1', red, green, blue)
+            lightcontrol.set_hue_color('1', red, green, blue)
         result = 'Success'
         return(jsonify(result=result, hexcolor=hexcolor, red=red, green=green, blue=blue))
     except ZeroResultsException as e:
