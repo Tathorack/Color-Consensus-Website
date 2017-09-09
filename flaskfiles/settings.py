@@ -22,7 +22,7 @@ class ThesisInstallConfig(Config):
 
 
 class ThesisWebConfig(Config):
-    ENV = 'thesis_web'
+    ENV = 'thesis-web'
     DEBUG = False
     SEARCH = 'google-limited'
     DISPLAY_MODE = 'thesis-web'

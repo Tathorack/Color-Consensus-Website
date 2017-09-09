@@ -25,7 +25,7 @@ def rgb_to_hex(red, green, blue):
 
 
 class HueLightControler(object):
-    """docstring for HueLightControler."""
+    """Class for setting the color of hue bulbs."""
     def __init__(self, brige_ip, user):
         self.bridge = Bridge(brige_ip, user)
         self.lights = self.bridge.lights()
