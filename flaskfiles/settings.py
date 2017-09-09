@@ -7,10 +7,12 @@ class Config(object):
     SEARCH = 'google'
     DISPLAY_MODE = 'default'
 
+
 class LightsConfig(Config):
     ENV = 'lights'
     DEBUG = False
     LIGHTS = True
+
 
 class ThesisInstallConfig(Config):
     ENV = 'thesis-install'
@@ -18,19 +20,15 @@ class ThesisInstallConfig(Config):
     LIGHTS = True
     DISPLAY_MODE = 'thesis-install'
 
+
 class ThesisWebConfig(Config):
     ENV = 'thesis_web'
     DEBUG = False
-    SEARCH = 'limited'
+    SEARCH = 'google-limited'
     DISPLAY_MODE = 'thesis-web'
+
 
 class DevConfig(Config):
     ENV = 'dev'
     DEBUG = True
     LIB_LOGGING = 'DEBUG'
-
-class TestConfig(DevConfig):
-    ENV = 'test'
-    DEBUG = True
-    LIB_LOGGING = 'DEBUG'
-    SEARCH = 'bing'

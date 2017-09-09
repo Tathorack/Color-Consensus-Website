@@ -1,3 +1,4 @@
+import os
 from time import time
 import logging
 
@@ -11,28 +12,21 @@ from searchcolor import ZeroResultsException
 
 from flaskfiles import app
 
-if app.config['SEARCH'] == 'bing':
-    from flaskfiles.api_keys import BingKeyLocker
-    BKL = BingKeyLocker()
-elif app.config['SEARCH'] == 'limited':
-    from flaskfiles.api_keys import LimitedGoogleKeyLocker
-    GKL = LimitedGoogleKeyLocker()
-else:
-    from flaskfiles.api_keys import GoogleKeyLocker
-    GKL = GoogleKeyLocker()
-
+api = os.environ.get("GOOGLE_SEARCH_API")
+cse = os.environ.get("GOOGLE_SEARCH_CSE")
 display = app.config['DISPLAY_MODE']
 
 if app.config['LIGHTS'] == True:
-    #BRIDGE_IP='192.168.1.29'
-    BRIDGE_IP='172.19.5.10'
-    HUE_USER='3DQZXO2BnrAepp95yjIiyV0CZF9g5d78332az30f'
+    # BRIDGE_IP='192.168.1.29' '172.19.5.10'
+    # HUE_USER'3DQZXO2BnrAepp95yjIiyV0CZF9g5d78332az30f'
+    BRIDGE_IP = os.environ.get('BRIDGE_IP')
+    HUE_USER = os.environ.get('HUE_USER')
     bridge = Bridge(BRIDGE_IP, HUE_USER)
     lights = bridge.lights()
 
 def set_hue_color(lightid, red, green, blue):
         hsv = rgb_to_hsv((red, green, blue))
-        lightid='1'
+        lightid = '1'
         hue = round((hsv[0]*65535)/360)
         sat = round(hsv[1]*255)
         bri = round(hsv[2]*255)
@@ -93,10 +87,7 @@ def average_search_images():
         t0 = time()
         search = request.get_json()['search']
         app.logger.debug(search)
-        if app.config['SEARCH'] == 'bing':
-            color = searchcolor.bing_average(search, 10, BKL.api(), max_threads=3, timeout=3, max_size=2)
-        else:
-            color = searchcolor.google_average(search, 10, GKL.api(), GKL.cse(), max_threads=3, timeout=3, max_size=2)
+        color = searchcolor.google_average(search, 10, api, cse, max_threads=3, timeout=3, max_size=2)
         red = color.get('red')
         green = color.get('green')
         blue = color.get('blue')
