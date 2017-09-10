@@ -13,7 +13,7 @@ from flaskfiles import app
 from flaskfiles.utilities import HueLightControler, rgb_to_hex
 
 # get values from environment
-api = os.environ.["GOOGLE_SEARCH_API"]
+api = os.environ["GOOGLE_SEARCH_API"]
 cse = os.environ["GOOGLE_SEARCH_CSE"]
 
 # if lights are enabled create a lightcontroller
@@ -62,36 +62,46 @@ def thesis_web():
 @app.route('/search_average/_search_single', methods=['POST'])
 def average_search_images():
     try:
-        t0 = time()
+        response_t = time()
         search = request.get_json()['search']
         app.logger.debug(search)
         color = searchcolor.google_average(
             search, 10, api, cse, max_threads=3, timeout=3, max_size=2)
-        t1 = time() - t0
+        response_t = time() - response_t
         app.logger.info('Search Average response took %0.3f seconds with %s \
                         - search: %s R:%d G:%d B:%d HEX:%s',
-                        t1, app.config['SEARCH'], search,
-                        color['red'], color['green'], color['blue'],
+                        response_t,
+                        app.config['SEARCH'],
+                        search,
+                        color['red'],
+                        color['green'],
+                        color['blue'],
                         rgb_to_hex(
                             color['red'],
                             color['green'],
-                            color['blue'])
-                        )
-
+                            color['blue']))
         if app.config['LIGHTS'] is True:
             lightcontrol.set_hue_color(
-                '1', color['red'], color['green'], color['blue'])
-        return(jsonify(result='Success',
-                       hexcolor=hexcolor,
-                       red=red, green=green, blue=blue))
+                '1',
+                color['red'],
+                color['green'],
+                color['blue'])
+        return jsonify({'result': 'success',
+                        'hex': rgb_to_hex(
+                            color['red'],
+                            color['green'],
+                            color['blue']),
+                        'red': color['red'],
+                        'green': color['green'],
+                        'blue': color['blue']})
     except searchcolor.ZeroResultsException as e:
         app.logger.warning('Exception: %s', e)
         app.logger.debug('Traceback:', exc_info=True)
-        return(jsonify(result='No results'))
+        return(jsonify(result='no results'))
     except Exception as e:
         app.logger.warning('Exception: %s', e)
         app.logger.debug('Traceback:', exc_info=True)
-        return(jsonify(result='An error occured'))
+        return(jsonify(result='an error occured'))
 
 
 @app.route('/single_average/_average_single', methods=['POST'])

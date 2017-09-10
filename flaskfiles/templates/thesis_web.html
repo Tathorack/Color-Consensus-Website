@@ -56,8 +56,8 @@
       $('#process-progress').removeClass('progress-bar-danger active');
       $('#process-progress').addClass('progress-bar-success');
       $('#process-progress').html("Finished");
-      $('#averaged-block').css('background', data.hexcolor);
-      var hex = "Color as Hex: " + data.hexcolor;
+      $('#averaged-block').css('background', data.hex);
+      var hex = "Color as Hex: " + data.hex;
       $('#hex').text(hex);
       var rgb = "Color as RGB: "+ data.red + ", "+ data.green + ", "+ data.blue;
       $('#rgb').text(rgb);
@@ -98,11 +98,11 @@
         },
         success: completeHandler = function(data) {
           switch (data.result) {
-            case 'Success':
+            case 'success':
               setpage(data);
               console.log('Success!');
               break;
-            case 'No results':
+            case 'no results':
               alert("No search results!");
               resetpage();
               break;

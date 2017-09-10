@@ -84,11 +84,11 @@
           },
           success: completeHandler = function(data) {
             switch (data.result) {
-              case 'Success':
+              case 'success':
                 setpage(data);
                 console.log('Success!');
                 break;
-              case 'No results':
+              case 'no results':
                 alert("No search results!");
                 resetpage();
                 break;
