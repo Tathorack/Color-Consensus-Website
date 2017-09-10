@@ -10,6 +10,7 @@ from qhue import Bridge, QhueException
 import searchcolor
 # local imports
 from flaskfiles import app
+from flaskfiles.database import db, Searches
 from flaskfiles.utilities import HueLightControler, rgb_to_hex
 
 # get values from environment
@@ -80,6 +81,15 @@ def average_search_images():
                             color['red'],
                             color['green'],
                             color['blue']))
+        current = Searches(
+            search,
+            app.config['SEARCH'],
+            color['red'],
+            color['green'],
+            color['blue'],
+            response_t)
+        db.session.add(current)
+        db.session.commit()
         if app.config['LIGHTS'] is True:
             lightcontrol.set_hue_color(
                 '1',

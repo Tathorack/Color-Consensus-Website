@@ -1,11 +1,14 @@
 appdirs
+certifi
+chardet
 click
 colorutils
 Flask
+Flask-SQLAlchemy
 google-api-python-client
 httplib2
+idna
 imagecolor
-searchcolor
 itsdangerous
 Jinja2
 MarkupSafe
@@ -21,6 +24,9 @@ pyparsing
 qhue
 requests
 rsa
+searchcolor
 six
+SQLAlchemy
 uritemplate
+urllib3
 Werkzeug
