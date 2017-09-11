@@ -3,3 +3,4 @@ api_keys.py
 flaskfiles/static/node_modules
 venv_flask
 *.log
+api_info.txt
