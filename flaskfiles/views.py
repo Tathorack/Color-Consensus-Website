@@ -4,7 +4,6 @@ import os
 from time import time
 # package imports
 from flask import render_template, request, jsonify, redirect
-from colorutils import rgb_to_hsv
 import imagecolor
 from qhue import Bridge, QhueException
 import searchcolor
@@ -69,8 +68,8 @@ def average_search_images():
         color = searchcolor.google_average(
             search, 10, api, cse, max_threads=3, timeout=3, max_size=2)
         response_t = time() - response_t
-        app.logger.info('Search Average response took %0.3f seconds with %s \
-                        - search: %s R:%d G:%d B:%d HEX:%s',
+        app.logger.info('Search Average response took %0.3f seconds with %s'
+                        ' - search: %s R:%d G:%d B:%d HEX:%s',
                         response_t,
                         app.config['SEARCH'],
                         search,
@@ -126,7 +125,7 @@ def average_upload_image():
     blue = color.get('blue')
     result = rgb_to_hex(red, green, blue)
     processing_time = time() - start
-    app.logger.info('Image Average response took %0.3f seconds - \
-                    R:%d, G:%d, B:%d, HEX:%s',
+    app.logger.info('Image Average response took %0.3f seconds - '
+                    'R:%d, G:%d, B:%d, HEX:%s',
                     processing_time, red, green, blue, result)
     return jsonify(result=result, red=red, green=green, blue=blue)
