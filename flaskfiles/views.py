@@ -5,12 +5,11 @@ from time import time
 # package imports
 from flask import render_template, request, jsonify, redirect
 import imagecolor
-from qhue import Bridge, QhueException
 import searchcolor
 # local imports
 from flaskfiles import app
 from flaskfiles.database import db, Searches
-from flaskfiles.utilities import HueLightControler, rgb_to_hex
+from flaskfiles.utilities import HueLightControler, rgb_to_hex, table_display
 
 # get values from environment
 api = os.environ["GOOGLE_SEARCH_API"]
@@ -36,6 +35,17 @@ def redirec_to_display():
 @app.route('/index/')
 def index():
     return render_template("home.html")
+
+
+@app.route('/history/')
+def history():
+    searches = [table_display(
+        search.search, search.red,
+        search.green, search.blue)
+                for search in
+                Searches.query.order_by(Searches.timestamp.desc()).all()]
+    return render_template('history.html',
+                           searches=searches, count=len(searches))
 
 
 @app.route('/single_average/')

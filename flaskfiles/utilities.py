@@ -24,6 +24,15 @@ def rgb_to_hex(red, green, blue):
     return '#%02x%02x%02x' % (red, green, blue)
 
 
+def table_display(search, red, green, blue):
+    """Return color as #rrggbb for the given color values."""
+    if 0.299 * red + 0.587 * green + 0.114 * blue > 128:
+        textcolor = '#000000'
+    else:
+        textcolor = '#FFFFFF'
+    return {'search': search, 'hex': rgb_to_hex(red, green, blue), 'textcolor': textcolor}
+
+
 class HueLightControler(object):
     """Class for setting the color of hue bulbs."""
     def __init__(self, brige_ip, user):
