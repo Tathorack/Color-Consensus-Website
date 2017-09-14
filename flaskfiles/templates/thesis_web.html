@@ -5,11 +5,11 @@
     <div class="row">
       <div class="col-lg-12">
         <h1 class="text-center">Color Consensus</h1>
-        <div class="spacer20"></div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">
+        <div class="spacer10"></div>
+        <h4 class="text-center">
+          Search for any word or phrase. A row will be added to the table displaying the average color of the top 10 Google image search results for for that word or phrase.
+        </h4>
+        <div class="spacer10"></div>
         <div class="input-group">
           <input id="search-string" name='gsearch' type="text" class="form-control" placeholder="Search">
           <div class="input-group-btn">
@@ -18,24 +18,24 @@
             </button>
           </div>
         </div>
-        <h4 id="hex">
-          Color as Hex:
-        </h4>
-        <h4 id="rgb">
-          Color as RGB:
-        </h4>
-        <p>
-          Search for any word or phrase. The color of the block will change to match the average color of the top 10 Google image search results for for that word or phrase.
-        </p>
-        </div>
-      <div class="col-md-9">
-        <div class="panel panel-default">
-          <div id="averaged-block" class="img-rounded embed-responsive embed-responsive-16by9" style='background: #ffffff; '></div>
-        </div>
+        <div class="spacer10"></div>
         <div class="progress">
           <div id=process-progress class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
             Waiting for search
           </div>
+        </div>
+        <h4 id="rgb" class="text-center">
+          Color as RGB:
+        </h4>
+        <div class="spacer10"></div>
+        <div class="panel panel-default">
+          <table class="table text-center table-bordered">
+            {% for search in searches %}
+            <tr style="background-color:{{ search.hex }}; color:{{ search.textcolor }}; font-weight: bold">
+              <td>{{ search.search }}</td>
+            </tr>
+            {% endfor %}
+          </table>
         </div>
       </div>
     </div>
