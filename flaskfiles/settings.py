@@ -7,7 +7,8 @@ class Config(object):
     SEARCH = 'google'
     DISPLAY_MODE = 'default'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////Users/rhyshansen/programming/source/project_website/thesis.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:////'
+    'Users/rhyshansen/programming/source/project_website/thesis.db'
 
 
 class LightsConfig(Config):

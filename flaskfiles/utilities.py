@@ -30,7 +30,8 @@ def table_display(search, red, green, blue):
         textcolor = '#000000'
     else:
         textcolor = '#FFFFFF'
-    return {'search': search, 'hex': rgb_to_hex(red, green, blue), 'textcolor': textcolor}
+    return {'search': search, 'hex': rgb_to_hex(red, green, blue),
+            'textcolor': textcolor}
 
 
 class HueLightControler(object):

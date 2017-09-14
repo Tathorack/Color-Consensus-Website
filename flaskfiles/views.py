@@ -12,11 +12,20 @@ from flaskfiles.database import db, Searches
 from flaskfiles.utilities import HueLightControler, rgb_to_hex, table_display
 
 # get values from environment
+
+if not os.environ.get("GOOGLE_SEARCH_API"):
+    raise RuntimeError("GOOGLE_SEARCH_API not set")
+if not os.environ.get("GOOGLE_SEARCH_CSE"):
+    raise RuntimeError("GOOGLE_SEARCH_CSE not set")
 api = os.environ["GOOGLE_SEARCH_API"]
 cse = os.environ["GOOGLE_SEARCH_CSE"]
 
 # if lights are enabled create a lightcontroller
 if app.config['LIGHTS'] is True:
+    if not os.environ.get("BRIDGE_IP"):
+        raise RuntimeError("BRIDGE_IP not set")
+    if not os.environ.get("HUE_USER"):
+        raise RuntimeError("HUE_USER not set")
     BRIDGE_IP = os.environ.get('BRIDGE_IP')
     HUE_USER = os.environ.get('HUE_USER')
     lightcontrol = HueLightControler(BRIDGE_IP, HUE_USER)
