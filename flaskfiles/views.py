@@ -3,7 +3,7 @@ import logging
 import os
 from time import time
 # package imports
-from flask import render_template, request, jsonify, redirect
+from flask import render_template, request, jsonify, redirect, url_for
 import imagecolor
 import searchcolor
 # local imports
@@ -25,11 +25,11 @@ if app.config['LIGHTS'] is True:
 @app.route('/')
 def redirec_to_display():
     if app.config['DISPLAY_MODE'] == 'thesis-install':
-        return render_template('thesis_installation.html')
+        return redirect(url_for('thesis_installation'))
     elif app.config['DISPLAY_MODE'] == 'thesis-web':
-        return render_template('thesis_web.html')
+        return redirect(url_for('thesis_web'))
     else:
-        return render_template('home.html')
+        return redirect(url_for('index'))
 
 
 @app.route('/index/')
@@ -65,7 +65,13 @@ def thesis_installation():
 
 @app.route('/thesis_web/')
 def thesis_web():
-    return render_template('thesis_web.html')
+    searches = [table_display(
+        search.search, search.red,
+        search.green, search.blue)
+                for search in
+                Searches.query.order_by(Searches.timestamp.desc()).all()]
+    return render_template('thesis_web.html',
+                           searches=searches, count=len(searches))
 
 
 # POST functions that take a json request and return a response
