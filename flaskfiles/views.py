@@ -106,6 +106,7 @@ def average_search_images():
                 color['green'],
                 color['blue'])
         return jsonify({'result': 'success',
+                        'search': search,
                         'hex': rgb_to_hex(
                             color['red'],
                             color['green'],
