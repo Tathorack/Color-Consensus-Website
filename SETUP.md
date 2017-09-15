@@ -1,4 +1,3 @@
-
 ### Set up virtual environment and install requirements
 
 ```bash
@@ -9,12 +8,17 @@ cd flaskfiles/static/
 npm install
 echo "front-end packages installed"
 ```
-### Install API keys for Google
-move api_keys.py to flaskfiles/extensions
-
-
-export FLASKAPP_ENV='test'
-
+### Set environment variables
+```bash
+export FLASKAPP_CONFIG
+export GOOGLE_SEARCH_API
+export GOOGLE_SEARCH_CSE
+```
+If using with Philips Hue
+```bash
+export BRIDGE_IP
+export HUE_USER
+```
 
 ### Raspberry Pi dependencies
 ```bash
